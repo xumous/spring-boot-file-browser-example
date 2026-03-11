@@ -1,0 +1,106 @@
+<!-- pages/train_query/train_query.wxml -->
+<view class="container">
+    <!-- 在train_query.wxml的container开头添加用户信息栏2025年12月5日10点24分 -->
+    <view class="user-info-bar" wx:if="{{userInfo}}">
+        <text class="user-name">欢迎，{{userInfo.stu_name}}</text>
+        <text class="user-no">学号：{{userInfo.stu_no}}</text>
+        <text bindtap="logout" class="logout-btn">退出</text>
+    </view>
+    <!-- 查询条件区域 -->
+    <view class="query-section">
+        <view class="query-form">
+            <view bindtap="showStartStationModal" class="station-item">
+                <text class="station-label">出发站</text>
+                <text class="station-value">{{queryParams.startStationName}}</text>
+                <text class="icon-arrow">></text>
+            </view>
+
+            <view bindtap="exchangeStations" class="exchange-btn">
+                <text class="exchange-icon">⇄</text>
+            </view>
+
+            <view bindtap="showEndStationModal" class="station-item">
+                <text class="station-label">到达站</text>
+                <text class="station-value">{{queryParams.endStationName}}</text>
+                <text class="icon-arrow">></text>
+            </view>
+
+            <button bindtap="queryTrains" class="query-btn">查询车次</button>
+        </view>
+    </view>
+
+    <!-- 车站选择模态框 -->
+    <view class="station-modal" wx:if="{{showStationModal}}">
+        <view bindtap="closeStationModal" class="modal-mask"></view>
+        <view class="modal-content">
+            <view class="modal-header">
+                <text class="modal-title">
+                    {{stationModalType == 'start' ? '选择出发站' : '选择到达站'}}
+                </text>
+                <text bindtap="closeStationModal" class="modal-close">×</text>
+            </view>
+            <scroll-view class="station-list" scroll-y>
+                <view bindtap="{{stationModalType == 'start' ? 'chooseStartStation' : 'chooseEndStation'}}"
+                      class="station-item-list" data-id="{{item.station_id}}" data-name="{{item.station_name}}"
+                      wx:for="{{stationList}}" wx:key="station_id">
+                    <text class="station-name">{{item.station_name}}</text>
+                    <text class="station-city">{{item.city_name}}</text>
+                </view>
+            </scroll-view>
+        </view>
+    </view>
+
+    <!-- 查询结果区域 -->
+    <view class="result-section" wx:if="{{trainList.length > 0}}">
+        <view class="result-title">查询结果 (共{{trainList.length}}个车次)</view>
+
+        <view class="train-list">
+            <view bindtap="goToTrainDetail" class="train-item" data-id="{{item.train_id}}" wx:for="{{trainList}}"
+                  wx:key="train_id">
+                <view class="train-header">
+                    <text class="train-number">{{item.train_number}}</text>
+                    <text class="train-type">{{item.train_type}}</text>
+                </view>
+
+                <view class="train-info">
+                    <view class="station-time">
+                        <text class="time">{{item.departure_time}}</text>
+                        <text class="station">{{item.start_station_name}}</text>
+                    </view>
+
+                    <view class="duration">
+                        <text class="duration-text">{{item.run_time}}</text>
+                        <view class="duration-line">——</view>
+                    </view>
+
+                    <view class="station-time">
+                        <text class="time">{{item.arrival_time}}</text>
+                        <text class="station">{{item.end_station_name}}</text>
+                    </view>
+                </view>
+
+                <view class="train-footer">
+                    <text class="price-label">票价：</text>
+                    <text class="price-value">二等座 ¥500 起</text>
+                    <text bindtap="goToSeatSelection" catchtap="goToSeatSelection" class="buy-btn"
+                          data-id="{{item.train_id}}">预订
+                    </text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 空状态提示 -->
+    <view class="empty-state" wx:if="{{queryResult.code === 404}}">
+        <text class="empty-icon">🚄</text>
+        <text class="empty-text">暂无符合条件的车次</text>
+        <text class="empty-tip">请尝试调整查询条件</text>
+    </view>
+
+    <!-- 初始状态提示 -->
+    <view class="empty-state" wx:if="{{trainList.length === 0 && queryResult.code !== 404}}">
+        <text class="empty-icon">🔍</text>
+        <text class="empty-text">请输入查询条件</text>
+        <text class="empty-tip">选择出发站和到达站后查询车次</text>
+    </view>
+</view>

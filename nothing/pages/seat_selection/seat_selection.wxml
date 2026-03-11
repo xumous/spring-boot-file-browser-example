@@ -1,0 +1,143 @@
+<!-- pages/seat_selection/seat_selection.wxml -->
+<scroll-view class="page-scroll" enable-flex scroll-y="{{true}}">
+    <view class="container">
+        <!-- 车次信息 -->
+        <view class="train-info-section">
+            <view class="train-header">
+                <text class="train-number">{{trainInfo.train_number}}</text>
+                <text class="train-type">{{trainInfo.train_type}}</text>
+            </view>
+            <view class="train-detail">
+                <view class="station-time">
+                    <text class="time">{{trainInfo.departure_time}}</text>
+                    <text class="station">{{trainInfo.start_station_name}}</text>
+                </view>
+                <view class="duration">
+                    <text class="duration-text">{{trainInfo.run_time}}</text>
+                </view>
+                <view class="station-time">
+                    <text class="time">{{trainInfo.arrival_time}}</text>
+                    <text class="station">{{trainInfo.end_station_name}}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- 车厢选择 -->
+        <view class="carriage-section">
+            <view class="section-title">选择车厢</view>
+            <scroll-view class="carriage-list" scroll-with-animation scroll-x="{{true}}">
+                <view class="carriage-scroll">
+                    <view bindtap="selectCarriage"
+                          class="carriage-item {{currentCarriageId == item.id ? 'active' : ''}}" data-id="{{item.id}}"
+                          wx:for="{{carriageList}}" wx:key="id">
+                        <text class="carriage-number">{{item.number}}车</text>
+                        <text class="carriage-type">{{item.type}}</text>
+                        <text class="carriage-price">¥{{item.price}}</text>
+                    </view>
+                </view>
+            </scroll-view>
+        </view>
+
+        <!-- 座位图 -->
+        <view class="seat-section">
+            <view class="seat-diagram">
+                <!-- 过道标识 -->
+                <view class="aisle-mark">
+                    <text class="aisle-text">过道</text>
+                </view>
+
+                <!-- 加载状态 -->
+                <view class="loading" wx:if="{{loading}}">
+                    <text>加载座位图中...</text>
+                </view>
+
+                <!-- 错误提示 -->
+                <view class="error" wx:if="{{error}}">
+                    <text>{{error}}</text>
+                </view>
+
+                <!-- 座位矩阵 -->
+                <scroll-view class="seat-matrix" scroll-with-animation scroll-y="{{true}}" style="height: 500rpx"
+                             wx:if="{{!loading && !error && seatMatrix.length > 0}}">
+                    <view class="seat-row" wx:for="{{seatMatrix}}" wx:for-index="rowIndex" wx:key="row">
+                        <!-- 排号 -->
+                        <text class="row-number">{{rowIndex + 1}}</text>
+
+                        <!-- 座位 -->
+                        <view class="seat-items">
+                            <view bindtap="selectSeat"
+                                  class="seat-item {{item[colIndex].seat_status == 0 ? 'available' : ''}} {{item[colIndex].seat_status == 1 ? 'sold' : ''}} {{item[colIndex].seat_status == 2 ? 'locked' : ''}} {{selectedSeat && selectedSeat.seat_id == item[colIndex].seat_id ? 'selected' : ''}}"
+                                  data-col="{{colIndex}}" data-row="{{rowIndex}}" wx:for="{{item}}"
+                                  wx:for-index="colIndex" wx:key="seat_id">
+                                <text class="seat-type-icon">
+                                    {{item[colIndex].seat_type == '靠窗' ? '窗' :
+                                    item[colIndex].seat_type == '过道' ? '道' :
+                                    item[colIndex].seat_type == '中间' ? '中' : '座'}}
+                                </text>
+                                <text class="seat-number">{{item[colIndex].seat_number}}</text>
+                            </view>
+                        </view>
+                    </view>
+                </scroll-view>
+
+                <!-- 空状态 -->
+                <view class="empty" wx:if="{{!loading && !error && seatMatrix.length === 0}}">
+                    <text>暂无座位数据</text>
+                </view>
+
+                <!-- 图例 -->
+                <view class="seat-legend">
+                    <view class="legend-item">
+                        <view class="legend-color available"></view>
+                        <text class="legend-text">可选</text>
+                    </view>
+                    <view class="legend-item">
+                        <view class="legend-color selected"></view>
+                        <text class="legend-text">已选</text>
+                    </view>
+                    <view class="legend-item">
+                        <view class="legend-color sold"></view>
+                        <text class="legend-text">已售</text>
+                    </view>
+                    <view class="legend-item">
+                        <view class="legend-color locked"></view>
+                        <text class="legend-text">锁定</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <!-- 乘客信息 -->
+        <view class="passenger-section">
+            <view class="section-title">乘客信息</view>
+
+            <view class="passenger-form">
+                <view class="form-item">
+                    <text class="form-label">姓名</text>
+                    <input bindinput="inputPassengerName" class="form-input" placeholder="请输入乘客姓名"
+                           value="{{passengerInfo.name}}"/>
+                </view>
+
+                <view class="form-item">
+                    <text class="form-label">身份证</text>
+                    <input bindinput="inputPassengerIdCard" class="form-input" placeholder="请输入身份证号码"
+                           value="{{passengerInfo.idCard}}"/>
+                </view>
+            </view>
+        </view>
+
+        <!-- 底部操作栏 -->
+        <view class="action-bar">
+            <view class="selected-info" wx:if="{{selectedSeat}}">
+                <text class="info-label">已选：</text>
+                <text class="info-value">{{selectedSeat.carriage_number}}车{{selectedSeat.seat_number}}号</text>
+                <text class="info-price">¥{{selectedSeat.seat_price || 100}}</text>
+            </view>
+
+            <button bindtap="submitOrder" class="submit-btn"
+                    disabled="{{!selectedSeat || !passengerInfo.name || !passengerInfo.idCard}}">
+                提交订单
+            </button>
+        </view>
+    </view>
+</scroll-view>

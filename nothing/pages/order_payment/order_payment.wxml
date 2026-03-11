@@ -1,0 +1,95 @@
+<!-- pages/order_payment/order_payment.wxml -->
+<scroll-view class="page-scroll" scroll-y="{{true}}">
+    <view class="container">
+        <!-- 订单信息 -->
+        <view class="order-section">
+            <view class="order-header">
+                <text class="order-title">待支付订单</text>
+                <text class="order-timeout">支付剩余时间：{{formatTime(countdown)}}</text>
+            </view>
+
+            <!-- 加载状态 -->
+            <view class="loading" wx:if="{{loading}}">
+                <text>加载订单信息中...</text>
+            </view>
+
+            <view wx:if="{{!loading && orderInfo}}">
+                <view class="order-detail">
+                    <view class="detail-item">
+                        <text class="detail-label">订单号：</text>
+                        <text class="detail-value">{{orderInfo.order_no}}</text>
+                    </view>
+
+                    <view class="detail-item">
+                        <text class="detail-label">车次：</text>
+                        <text class="detail-value">{{orderInfo.train_number}}</text>
+                    </view>
+
+                    <view class="detail-item">
+                        <text class="detail-label">行程：</text>
+                        <text class="detail-value">{{orderInfo.start_station_name}} →
+                            {{orderInfo.end_station_name}}</text>
+                    </view>
+
+                    <view class="detail-item">
+                        <text class="detail-label">座位：</text>
+                        <text class="detail-value">{{orderInfo.carriage_number}}车{{orderInfo.seat_number}}号</text>
+                    </view>
+
+                    <view class="detail-item">
+                        <text class="detail-label">乘客：</text>
+                        <text class="detail-value">{{orderInfo.passenger_name}} ({{orderInfo.passenger_id_card}})
+                        </text>
+                    </view>
+                </view>
+
+                <view class="order-amount">
+                    <text class="amount-label">支付金额</text>
+                    <text class="amount-value">¥{{orderInfo.ticket_price}}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- 支付方式 -->
+        <view class="payment-section">
+            <view class="section-title">选择支付方式</view>
+
+            <view class="payment-methods">
+                <view bindtap="selectPaymentMethod" class="method-item {{paymentMethod == 'wechat' ? 'active' : ''}}"
+                      data-method="wechat">
+                    <view class="method-icon wechat">💳</view>
+                    <text class="method-name">微信支付</text>
+                    <text class="method-select">{{paymentMethod == 'wechat' ? '✓' : ''}}</text>
+                </view>
+
+                <view bindtap="selectPaymentMethod" class="method-item {{paymentMethod == 'alipay' ? 'active' : ''}}"
+                      data-method="alipay">
+                    <view class="method-icon alipay">💰</view>
+                    <text class="method-name">支付宝</text>
+                    <text class="method-select">{{paymentMethod == 'alipay' ? '✓' : ''}}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- 支付协议 -->
+        <view class="agreement-section">
+            <checkbox checked="{{true}}"/>
+            <text class="agreement-text">我已阅读并同意《用户服务协议》和《支付协议》</text>
+        </view>
+    </view>
+</scroll-view>
+
+        <!-- 底部操作栏 -->
+<view class="action-bar">
+    <view class="action-left">
+        <text class="total-label">合计：</text>
+        <text class="total-value">¥{{orderInfo.ticket_price || 0}}</text>
+    </view>
+
+    <view class="action-right">
+        <button bindtap="cancelOrder" class="cancel-btn">取消订单</button>
+        <button bindtap="confirmPayment" class="pay-btn {{paying ? 'paying' : ''}}" disabled="{{paying || !orderInfo}}">
+            {{paying ? '支付中...' : '确认支付'}}
+        </button>
+    </view>
+</view>

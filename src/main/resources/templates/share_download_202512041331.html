@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>文件管理系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .current-path {
+            background-color: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .path-segment {
+            color: #007bff;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .path-segment:hover {
+            text-decoration: underline;
+        }
+
+        .path-separator {
+            margin: 0 5px;
+            color: #6c757d;
+        }
+
+        .file-list {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .file-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .file-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-icon {
+            margin-right: 10px;
+            width: 24px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .folder-icon {
+            color: #ffc107;
+        }
+
+        .file-name {
+            flex: 1;
+        }
+
+        .file-size {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-right: 15px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 4px 12px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.9em;
+            transition: opacity 0.2s;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+
+        .view-btn {
+            background-color: #28a745;
+        }
+
+        .download-btn {
+            background-color: #007bff;
+        }
+
+        .empty-message {
+            padding: 40px;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .folder-children {
+            margin-left: 30px;
+            display: none;
+            border-left: 2px solid #e9ecef;
+        }
+
+        .folder-children.expanded {
+            display: block;
+        }
+
+        .folder-toggle {
+            margin-right: 5px;
+            cursor: pointer;
+            color: #6c757d;
+            width: 20px;
+            text-align: center;
+        }
+
+        .folder-header {
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body>
+<h1>文件管理系统</h1>
+<div class="current-path" id="currentPath">
+    <span id="pathDisplay">根目录</span>
+</div>
+<div class="file-list" id="fileList">
+    <div class="empty-message">正在加载文件列表...</div>
+</div>
+
+<script>
+    let currentPath = "";
+
+    // 加载文件列表
+    function loadFileList(path) {
+        const url = path
+            ? `/files/list?path=${encodeURIComponent(path)}`
+            : "/files/list";
+        fetch(url)
+            .then((response) => {
+                if (!response.ok) throw new Error("加载失败");
+                return response.json();
+            })
+            .then((data) => {
+                currentPath = data.currentPath || "";
+                updatePathDisplay(data.currentPath, data.parentPath);
+                renderFileList(data.items);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                document.getElementById("fileList").innerHTML =
+                    '<div class="empty-message">加载文件列表失败</div>';
+            });
+    }
+
+    // 更新路径显示
+    function updatePathDisplay(currentPath, parentPath) {
+        const pathDisplay = document.getElementById("pathDisplay");
+        if (!currentPath) {
+            pathDisplay.innerHTML =
+                '<span class="path-segment" onclick="loadFileList(\'\')">根目录</span>';
+            return;
+        }
+
+        let html =
+            '<span class="path-segment" onclick="loadFileList(\'\')">根目录</span>';
+        const segments = currentPath.split(/[\\/]/);
+        let accumulatedPath = "";
+
+        segments.forEach((segment, index) => {
+            if (segment) {
+                if (accumulatedPath) accumulatedPath += "/";
+                accumulatedPath += segment;
+                html += `<span class="path-separator">/</span>
+                                            <span class="path-segment" onclick="loadFileList('${accumulatedPath}')">${segment}</span>`;
+            }
+        });
+
+        pathDisplay.innerHTML = html;
+    }
+
+    // 渲染文件列表
+    function renderFileList(items) {
+        const fileListDiv = document.getElementById("fileList");
+
+        if (!items || items.length === 0) {
+            fileListDiv.innerHTML = '<div class="empty-message">文件夹为空</div>';
+            return;
+        }
+
+        fileListDiv.innerHTML = "";
+
+        items.forEach((item) => {
+            const fileDiv = document.createElement("div");
+            fileDiv.className = "file-item";
+
+            if (item.type === "folder") {
+                fileDiv.innerHTML = `
+                                        <div class="file-icon folder-icon">📁</div>
+                                        <div class="file-name">${item.name}</div>
+                                        <div class="file-actions">
+                                            <button class="action-btn view-btn" onclick="loadFileList('${item.path}')">打开</button>
+                                        </div>
+                                    `;
+                fileDiv.onclick = (e) => {
+                    if (!e.target.closest(".action-btn")) {
+                        loadFileList(item.path);
+                    }
+                };
+            } else {
+                // 对文件路径进行双重编码，确保特殊字符正确处理
+                const encodedPath = encodeURIComponent(item.path);
+                const doubleEncodedPath = encodeURIComponent(encodedPath);
+
+                fileDiv.innerHTML = `
+                                        <div class="file-icon">📄</div>
+                                        <div class="file-name">${item.name
+                }</div>
+                                        <div class="file-size">${formatFileSize(
+                    item.size
+                )}</div>
+                                        <div class="file-actions">
+                                            <button class="action-btn view-btn" onclick="viewFile('${encodedPath}')">查看</button>
+                                            <button class="action-btn download-btn" onclick="downloadFile('${encodedPath}')">下载</button>
+                                        </div>
+                                    `;
+                fileDiv.onclick = (e) => {
+                    if (!e.target.closest(".action-btn")) {
+                        viewFile(encodedPath);
+                    }
+                };
+            }
+
+            fileListDiv.appendChild(fileDiv);
+        });
+    }
+
+    // 查看文件
+    function viewFile(path) {
+        // 对路径进行双重解码
+        const decodedPath = decodeURIComponent(path);
+        window.open(`/files/view/${decodedPath}`, "_blank");
+    }
+
+    // 下载文件
+    function downloadFile(path) {
+        // 对路径进行双重解码
+        const decodedPath = decodeURIComponent(path);
+        window.location.href = `/files/download/${decodedPath}`;
+    }
+
+    // 格式化文件大小
+    function formatFileSize(bytes) {
+        if (bytes === 0) return "0 B";
+        const k = 1024;
+        const sizes = ["B", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    }
+
+    // 页面加载时初始化
+    document.addEventListener("DOMContentLoaded", function () {
+        loadFileList("");
+    });
+</script>
+</body>
+
+</html>

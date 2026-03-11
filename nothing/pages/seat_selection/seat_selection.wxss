@@ -1,0 +1,452 @@
+/* pages/seat_selection/seat_selection.wxss */
+/* 页面外层滚动容器 */
+.page-scroll {
+    height: 100vh;
+    box-sizing: border-box;
+    background-color: #f5f5f5;
+}
+
+.container {
+    padding: 20rpx;
+    padding-bottom: 100rpx;
+    /* 为底部按钮留出空间 */
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* 车次信息样式 */
+.train-info-section {
+    background: white;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 30rpx;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.train-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+}
+
+.train-number {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #333;
+}
+
+.train-type {
+    font-size: 24rpx;
+    color: #4caf50;
+    background: #e8f5e8;
+    padding: 8rpx 16rpx;
+    border-radius: 20rpx;
+}
+
+.train-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.station-time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.time {
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8rpx;
+}
+
+.station {
+    font-size: 24rpx;
+    color: #666;
+}
+
+.duration {
+    padding: 0 20rpx;
+}
+
+.duration-text {
+    font-size: 22rpx;
+    color: #999;
+}
+
+/* 车厢选择样式 */
+.carriage-section {
+    background: white;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 30rpx;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20rpx;
+}
+
+.carriage-list {
+    width: 100%;
+    white-space: nowrap;
+    height: 120rpx;
+}
+
+.carriage-scroll {
+    display: inline-flex;
+}
+
+.carriage-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20rpx 30rpx;
+    margin-right: 20rpx;
+    border: 2rpx solid #e0e0e0;
+    border-radius: 10rpx;
+    background: #f9f9f9;
+    min-width: 150rpx;
+    box-sizing: border-box;
+}
+
+.carriage-item.active {
+    border-color: #4caf50;
+    background: #e8f5e8;
+}
+
+.carriage-item:active {
+    background: #f0f0f0;
+    opacity: 0.8;
+}
+
+.carriage-number {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #333;
+}
+
+.carriage-type {
+    font-size: 24rpx;
+    color: #666;
+    margin: 8rpx 0;
+}
+
+.carriage-price {
+    font-size: 22rpx;
+    color: #f44336;
+    font-weight: bold;
+}
+
+/* 座位图样式 */
+.seat-section {
+    background: white;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 30rpx;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.seat-diagram {
+    display: flex;
+    flex-direction: column;
+}
+
+.aisle-mark {
+    text-align: center;
+    margin-bottom: 20rpx;
+}
+
+.aisle-text {
+    font-size: 24rpx;
+    color: #999;
+    background: #f0f0f0;
+    padding: 6rpx 20rpx;
+    border-radius: 20rpx;
+}
+
+.loading,
+.error,
+.empty {
+    text-align: center;
+    padding: 60rpx;
+    color: #999;
+    font-size: 28rpx;
+    height: 300rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error {
+    color: #f44336;
+}
+
+.seat-matrix {
+    width: 100%;
+    margin-bottom: 20rpx;
+}
+
+.seat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20rpx;
+    min-height: 80rpx;
+}
+
+.row-number {
+    width: 60rpx;
+    text-align: center;
+    font-size: 24rpx;
+    color: #666;
+    margin-right: 20rpx;
+    flex-shrink: 0;
+}
+
+.seat-items {
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+}
+
+.seat-item {
+    width: 70rpx;
+    height: 70rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5rpx;
+    border-radius: 8rpx;
+    border: 2rpx solid #e0e0e0;
+    background: white;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+/* 基础座位样式 */
+.seat-item {
+    width: 70rpx;
+    height: 70rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5rpx;
+    border-radius: 8rpx;
+    border: 2rpx solid #e0e0e0;
+    background: white;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+/* 各个状态样式 - 使用更具体的选择器确保优先级 */
+.seat-item.available {
+    border-color: #4caf50 !important;
+    background: #f1f8e9 !important;
+}
+
+.seat-item.available:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+}
+
+.seat-item.selected {
+    border-color: #2196f3 !important;
+    background: #e3f2fd !important;
+    transform: scale(1.05);
+    box-shadow: 0 4rpx 12rpx rgba(33, 150, 243, 0.3) !important;
+}
+
+.seat-item.sold {
+    border-color: #f44336 !important;
+    background: #ffebee !important;
+    opacity: 0.6;
+}
+
+.seat-item.locked {
+    border-color: #ff9800 !important;
+    background: #fff3e0 !important;
+    opacity: 0.8;
+}
+
+/* 确保选中状态有最高优先级 */
+.seat-item.available.selected,
+.seat-item.sold.selected,
+.seat-item.locked.selected {
+    border-color: #2196f3 !important;
+    background: #e3f2fd !important;
+    transform: scale(1.05);
+    box-shadow: 0 4rpx 12rpx rgba(33, 150, 243, 0.3) !important;
+    opacity: 1;
+}
+
+.seat-type-icon {
+    font-size: 20rpx;
+    color: #666;
+}
+
+.seat-number {
+    font-size: 20rpx;
+    color: #333;
+    font-weight: bold;
+    margin-top: 4rpx;
+}
+
+.seat-legend {
+    display: flex;
+    justify-content: center;
+    margin-top: 30rpx;
+    flex-wrap: wrap;
+    gap: 20rpx;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 10rpx;
+}
+
+.legend-color {
+    width: 30rpx;
+    height: 30rpx;
+    border-radius: 6rpx;
+    margin-right: 10rpx;
+    border: 2rpx solid transparent;
+}
+
+.legend-color.available {
+    background: #f1f8e9;
+    border-color: #4caf50;
+}
+
+.legend-color.selected {
+    background: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.legend-color.sold {
+    background: #ffebee;
+    border-color: #f44336;
+}
+
+.legend-color.locked {
+    background: #fff3e0;
+    border-color: #ff9800;
+}
+
+.legend-text {
+    font-size: 24rpx;
+    color: #666;
+}
+
+/* 乘客信息样式 */
+.passenger-section {
+    background: white;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 30rpx;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.passenger-form {
+    margin-top: 20rpx;
+}
+
+.form-item {
+    margin-bottom: 30rpx;
+}
+
+.form-label {
+    display: block;
+    font-size: 28rpx;
+    color: #333;
+    margin-bottom: 10rpx;
+}
+
+.form-input {
+    border: 2rpx solid #e0e0e0;
+    border-radius: 10rpx;
+    padding: 20rpx;
+    font-size: 28rpx;
+    width: 100%;
+    box-sizing: border-box;
+    background: #f9f9f9;
+}
+
+.form-input:focus {
+    border-color: #4caf50;
+    background: white;
+}
+
+/* 底部操作栏样式 */
+.action-bar {
+    background: white;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 50rpx;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    bottom: 20rpx;
+    z-index: 100;
+}
+
+.selected-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.info-label {
+    font-size: 28rpx;
+    color: #666;
+    margin-right: 10rpx;
+}
+
+.info-value {
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #333;
+    margin-right: 15rpx;
+}
+
+.info-price {
+    font-size: 28rpx;
+    color: #f44336;
+    font-weight: bold;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #4caf50, #45a049);
+    color: white;
+    border: none;
+    border-radius: 10rpx;
+    padding: 25rpx 40rpx;
+    font-size: 30rpx;
+    font-weight: bold;
+    min-width: 200rpx;
+    flex-shrink: 0;
+}
+
+.submit-btn:active {
+    background: linear-gradient(135deg, #45a049, #4caf50);
+    opacity: 0.9;
+}
+
+.submit-btn[disabled] {
+    background: #e0e0e0;
+    color: #999;
+    opacity: 0.6;
+}

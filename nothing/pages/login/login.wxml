@@ -1,0 +1,42 @@
+<!--pages/login/login.wxml-->
+<view class="login-container">
+    <!-- 登录表单 -->
+    <view class="login-form">
+        <view class="logo-section">
+            <text class="logo-icon">🚄</text>
+            <text class="logo-text">高铁票务系统</text>
+            <text class="welcome-text">欢迎登录</text>
+        </view>
+
+        <view class="form-group">
+            <text class="form-label">学号</text>
+            <input bindinput="inputStuNo" class="form-input" maxlength="20" placeholder="请输入学号" type="number"
+                   value="{{stu_no}}"/>
+        </view>
+
+        <view class="form-group">
+            <text class="form-label">密码</text>
+            <input bindinput="inputStuPwd" class="form-input" maxlength="20" password placeholder="请输入密码"
+                   value="{{stu_pwd}}"/>
+        </view>
+
+        <view class="remember-me">
+            <checkbox bindtap="toggleRememberMe" checked="{{rememberMe}}" color="#4caf50"/>
+            <text class="remember-text">记住账号</text>
+        </view>
+
+        <button bindtap="login" class="login-btn {{loading ? 'loading' : ''}}" disabled="{{loading}}">
+            {{loading ? '登录中...' : '登录'}}
+        </button>
+
+        <view class="register-link">
+            <text>还没有账号？</text>
+            <text bindtap="goToRegister" class="link-text">立即注册</text>
+        </view>
+    </view>
+
+    <!-- 底部信息 -->
+    <view class="footer">
+        <text class="footer-text">© 2025 高铁票务系统 学生版</text>
+    </view>
+</view>

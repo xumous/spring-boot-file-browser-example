@@ -1,0 +1,65 @@
+<view class="weui-navigation-bar {{extClass}}">
+    <view class="weui-navigation-bar__inner {{ios ? 'ios' : 'android'}}"
+          style="color: {{color}}; background: {{background}}; {{displayStyle}}; {{innerPaddingRight}}; {{safeAreaTop}};">
+
+        <!-- 左侧按钮 -->
+        <view class='weui-navigation-bar__left' style="{{leftWidth}};">
+            <block wx:if="{{back || homeButton}}">
+                <!-- 返回上一页 -->
+                <block wx:if="{{back}}">
+                    <view class="weui-navigation-bar__buttons weui-navigation-bar__buttons_goback">
+                        <view
+                                aria-label="返回"
+                                aria-role="button"
+                                bindtap="back"
+                                class="weui-navigation-bar__btn_goback_wrapper"
+                                hover-class="weui-active"
+                                hover-stay-time="100"
+                        >
+                            <view class="weui-navigation-bar__button weui-navigation-bar__btn_goback"></view>
+                        </view>
+                    </view>
+                </block>
+                <!-- 返回首页 -->
+                <block wx:if="{{homeButton}}">
+                    <view class="weui-navigation-bar__buttons weui-navigation-bar__buttons_home">
+                        <view
+                                aria-label="首页"
+                                aria-role="button"
+                                bindtap="home"
+                                class="weui-navigation-bar__btn_home_wrapper"
+                                hover-class="weui-active"
+                        >
+                            <view class="weui-navigation-bar__button weui-navigation-bar__btn_home"></view>
+                        </view>
+                    </view>
+                </block>
+            </block>
+            <block wx:else>
+                <slot name="left"></slot>
+            </block>
+        </view>
+
+        <!-- 标题 -->
+        <view class='weui-navigation-bar__center'>
+            <view aria-role="alert" class="weui-navigation-bar__loading" wx:if="{{loading}}">
+                <view
+                        aria-label="加载中"
+                        aria-role="img"
+                        class="weui-loading"
+                ></view>
+            </view>
+            <block wx:if="{{title}}">
+                <text>{{title}}</text>
+            </block>
+            <block wx:else>
+                <slot name="center"></slot>
+            </block>
+        </view>
+
+        <!-- 右侧留空 -->
+        <view class='weui-navigation-bar__right'>
+            <slot name="right"></slot>
+        </view>
+    </view>
+</view>
